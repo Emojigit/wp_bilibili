@@ -1,5 +1,5 @@
 from modules import mediawiki as mw
-import requests, logging, sys
+import requests, logging, sys, time
 exit = sys.exit
 logging.basicConfig(level=logging.INFO,format="%(asctime)s %(levelname)s[%(name)s] %(message)s")
 log = logging.getLogger("MainScript")
@@ -29,6 +29,8 @@ def main(S):
     if delay == False:
         log.warning("delay.txt not found! Using \"5\"")
         delay == 5
+    else:
+        delay = int(delay)
     mw.chroot(root)
     token = mw.token(S,"login")[0]
     status = mw.login(S,token,uname,passwd)
@@ -62,7 +64,11 @@ def main(S):
             if EDIT[0] == False:
                 log.error("error while editing " + title + ": " + EDIT[1])
                 log.error(EDIT[2])
+            time.sleep(delay)
         except Exception as e:
             log.error("Error while processing " + y)
             log.error(str(e))
             pass
+
+if __name__ == '__main__':
+    main(requests.Session())
